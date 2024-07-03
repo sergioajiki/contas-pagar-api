@@ -1,5 +1,6 @@
 package projetos.contas_pagar_api.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projetos.contas_pagar_api.advice.exception.DuplicateEntryException;
 import projetos.contas_pagar_api.advice.exception.NotFoundException;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public class FornecedorService implements IFornecedorService {
     private FornecedorRepository fornecedorRepository;
 
+    @Autowired
     public FornecedorService(FornecedorRepository fornecedorRepository) {
         this.fornecedorRepository = fornecedorRepository;
     }
@@ -30,6 +32,7 @@ public class FornecedorService implements IFornecedorService {
         }
         return fornecedorOptional.get();
     }
+
     public Fornecedor create(Fornecedor fornecedorToCreate) {
         Optional<Fornecedor> verificaCpfOptional = Optional.ofNullable(fornecedorRepository.findByCpf(fornecedorToCreate.getCpf()));
         if (verificaCpfOptional.isPresent()) {
@@ -51,7 +54,7 @@ public class FornecedorService implements IFornecedorService {
     @Override
     public Fornecedor update(Long id, Fornecedor fornecedorToUpdate) {
         Optional<Fornecedor> fornecedorOptional = fornecedorRepository.findById(id);
-        if(fornecedorOptional.isEmpty()) {
+        if (fornecedorOptional.isEmpty()) {
             throw new NotFoundException(String.format("Fornecedor com id %d não encontrado", id));
         }
 
@@ -62,7 +65,7 @@ public class FornecedorService implements IFornecedorService {
     @Override
     public void delete(Long id) {
         Optional<Fornecedor> fornecedorOptional = fornecedorRepository.findById(id);
-        if(fornecedorOptional.isEmpty()) {
+        if (fornecedorOptional.isEmpty()) {
             throw new NotFoundException(String.format("Fornecedor com id %d não encontrado", id));
         }
         fornecedorRepository.delete(fornecedorOptional.get());

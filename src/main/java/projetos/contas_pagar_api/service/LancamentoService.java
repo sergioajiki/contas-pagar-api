@@ -1,14 +1,15 @@
 package projetos.contas_pagar_api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import projetos.contas_pagar_api.advice.exception.NotFoundException;
-import projetos.contas_pagar_api.model.entity.Fornecedor;
 import projetos.contas_pagar_api.model.entity.Lancamento;
 import projetos.contas_pagar_api.model.repository.LancamentoRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class LancamentoService implements ILancamentoService {
     private LancamentoRepository lancamentoRepository;
 

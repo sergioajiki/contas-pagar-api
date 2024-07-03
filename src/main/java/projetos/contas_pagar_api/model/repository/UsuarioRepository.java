@@ -6,4 +6,5 @@ import projetos.contas_pagar_api.model.entity.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+    Usuario findByEmail(String email);
 }
