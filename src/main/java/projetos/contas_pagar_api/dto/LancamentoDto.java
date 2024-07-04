@@ -23,7 +23,6 @@ public record LancamentoDto(
                 lancamento.getDataPagamento(),
                 lancamento.getUsuario(),
                 lancamento.getFornecedor()
-
         );
     }
 

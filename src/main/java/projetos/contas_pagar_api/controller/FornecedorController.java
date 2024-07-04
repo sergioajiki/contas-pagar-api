@@ -4,18 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import projetos.contas_pagar_api.dto.FornecedorDto;
 import projetos.contas_pagar_api.dto.FornecedorInfoDto;
+import projetos.contas_pagar_api.dto.FornecedorRegistroDto;
 import projetos.contas_pagar_api.service.FornecedorService;
 
-import java.util.Calendar;
 import java.util.List;
 
 @RestController
 @Tag(name = "Fornecedores")
-@RequestMapping("/")
+@RequestMapping("/fornecedor")
 public class FornecedorController {
     private final FornecedorService fornecedorService;
     public FornecedorController(FornecedorService fornecedorService) {
@@ -27,5 +26,34 @@ public class FornecedorController {
         List<FornecedorInfoDto> allFornecedores = fornecedorService.findInfoAllFornecedor();
         return ResponseEntity.status(HttpStatus.OK).body(allFornecedores);
     }
+
+    @GetMapping("/{id}")
+    @Operation(description = "Busca um fornecedor por id")
+    public ResponseEntity<FornecedorDto> getFornecedorById(@RequestParam Long id) {
+        FornecedorDto fornecedorById = fornecedorService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(fornecedorById);
+    }
+
+    @PostMapping
+    @Operation(description = "Cadastrar um fornecedor")
+    public ResponseEntity<FornecedorRegistroDto> registerFornecedor(@RequestBody FornecedorRegistroDto fornecedorRegistroDto) {
+        FornecedorRegistroDto fornecedorRegistrado = fornecedorService.create(fornecedorRegistroDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorRegistrado);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(description = "Atualiza as informações do fornecedor selecionado por id")
+    public ResponseEntity<FornecedorRegistroDto> updateFornecedor(@RequestParam Long id, @RequestBody FornecedorRegistroDto fornecedorUpdateDto) {
+        FornecedorRegistroDto fornecedorAtualizado = fornecedorService.update(id, fornecedorUpdateDto);
+        return ResponseEntity.status(HttpStatus.OK).body(fornecedorAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(description = "Exclui um fornecedor por id")
+    public ResponseEntity<Void> deleteFornecedor(@RequestParam Long id) {
+        fornecedorService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
 

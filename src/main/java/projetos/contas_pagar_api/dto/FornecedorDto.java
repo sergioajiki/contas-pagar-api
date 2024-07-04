@@ -12,12 +12,12 @@ public record FornecedorDto (
         String email,
         String cpf,
         String cnpj,
-        List<LancamentoDto> lancamentoList
+        List<LancamentoResumoDto> lancamentoList
 ) {
     public static FornecedorDto toDto(Fornecedor fornecedor) {
         List<Lancamento> lancamentoList = fornecedor.getLancamentoList();
-        List<LancamentoDto> lancamentoDtoList = lancamentoList.stream()
-                .map(LancamentoDto::toDto)
+        List<LancamentoResumoDto> lancamentoDtoList = lancamentoList.stream()
+                .map(LancamentoResumoDto::toDto)
                 .collect(Collectors.toList());
         return new FornecedorDto(
                 fornecedor.getNome(),
@@ -28,16 +28,12 @@ public record FornecedorDto (
         );
     }
 
-//    public static Fornecedor toModel(FornecedorDto fornecedorDto) {
-//
-//        Fornecedor fornecedor = new Fornecedor();
-//        fornecedor.setNome(fornecedorDto.nome);
-//        fornecedor.setEmail(fornecedorDto.email);
-//        fornecedor.setCpf(fornecedorDto.cpf);
-//        fornecedor.setCnpj(fornecedorDto.cnpj);
-//        fornecedor.setLancamentoList(fornecedorDto.lancamentoList);
-//
-//        return fornecedor;
-//    }
-
+    public static Fornecedor toModel(FornecedorRegistroDto fornecedorRegistroDto) {
+        Fornecedor fornecedor = new Fornecedor();
+        fornecedor.setNome(fornecedorRegistroDto.nome());
+        fornecedor.setEmail(fornecedorRegistroDto.email());
+        fornecedor.setCpf(fornecedorRegistroDto.cpf());
+        fornecedor.setCnpj(fornecedorRegistroDto.cnpj());
+        return fornecedor;
+    };
 }
