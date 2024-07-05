@@ -8,32 +8,32 @@ import projetos.contas_pagar_api.model.entity.Usuario;
 import java.time.LocalDate;
 
 public record LancamentoDto(
+        Long idUsuario,
+        Long idFornecedor,
         String descricao,
         Double valor,
         LocalDate dataVencimento,
-        LocalDate dataPagamento,
-        Usuario usuario,
-        Fornecedor fornecedor
+        LocalDate dataPagamento
 ) {
     public static LancamentoDto toDto(Lancamento lancamento) {
         return new LancamentoDto(
+                lancamento.getUsuario().getId(),
+                lancamento.getFornecedor().getId(),
                 lancamento.getDescricao(),
                 lancamento.getValor(),
                 lancamento.getDataVencimento(),
-                lancamento.getDataPagamento(),
-                lancamento.getUsuario(),
-                lancamento.getFornecedor()
+                lancamento.getDataPagamento()
         );
     }
 
-    public static Lancamento toModel(LancamentoDto lancamentoDto) {
+    public static Lancamento toModel(LancamentoDto lancamentoDto, Fornecedor fornecedor, Usuario usuario) {
         Lancamento lancamento = new Lancamento();
-        lancamento.setDescricao(lancamentoDto.descricao);
-        lancamento.setValor(lancamentoDto.valor);
-        lancamento.setDataVencimento(lancamentoDto.dataVencimento);
-        lancamento.setDataPagamento(lancamentoDto.dataPagamento);
-        lancamento.setUsuario(lancamentoDto.usuario);
-        lancamento.setFornecedor(lancamentoDto.fornecedor);
+        lancamento.setFornecedor(fornecedor);
+        lancamento.setUsuario(usuario);
+        lancamento.setDescricao(lancamentoDto.descricao());
+        lancamento.setValor(lancamentoDto.valor());
+        lancamento.setDataVencimento(lancamentoDto.dataVencimento());
+        lancamento.setDataPagamento(lancamentoDto.dataPagamento());
 
         return lancamento;
     }

@@ -24,4 +24,13 @@ public record UsuarioDto(
                 lancamentoDtoList
         );
     }
+
+    public static Usuario toModel(UsuarioRegistroDto usuarioDto) {
+        Usuario usuario = new Usuario();
+        usuario.setNome(usuarioDto.nome());
+        usuario.setEmail(usuarioDto.email());
+        usuario.setPassword(usuarioDto.password());
+
+        return usuario;
+    }
 }
