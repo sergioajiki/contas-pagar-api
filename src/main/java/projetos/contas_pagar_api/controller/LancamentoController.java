@@ -2,6 +2,7 @@ package projetos.contas_pagar_api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,14 +39,14 @@ public class LancamentoController {
 
     @PostMapping
     @Operation(description = "Cadastra um lançamento")
-    public ResponseEntity<LancamentoDto> registerLancamento(@RequestBody LancamentoDto lancamentoRegistroDto) {
+    public ResponseEntity<LancamentoDto> registerLancamento(@RequestBody @Valid LancamentoDto lancamentoRegistroDto) {
         LancamentoDto lancamentoRegistrado = lancamentoService.create(lancamentoRegistroDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoRegistrado);
     }
 
     @PutMapping("/{id}")
     @Operation(description = "Atualiza as informações do lançamento")
-    public ResponseEntity<LancamentoDto> updateLancamento(@RequestParam Long id, @RequestBody LancamentoDto lancamentoDto) {
+    public ResponseEntity<LancamentoDto> updateLancamento(@RequestParam Long id, @RequestBody @Valid LancamentoDto lancamentoDto) {
         LancamentoDto lancamentoUpdated = lancamentoService.update(id, lancamentoDto);
         return ResponseEntity.status(HttpStatus.OK).body(lancamentoUpdated);
     }

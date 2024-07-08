@@ -2,12 +2,18 @@ package projetos.contas_pagar_api.advice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import projetos.contas_pagar_api.advice.exception.DuplicateEntryException;
 import projetos.contas_pagar_api.advice.exception.NotFoundException;
+import projetos.contas_pagar_api.dto.ErrorMesssageDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ControllerAdvice
 public class GeneralControllerAdvice {
@@ -38,5 +44,27 @@ public class GeneralControllerAdvice {
                 null
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Problem> handleFieldNotFound(MethodArgumentNotValidException exception) {
+        List<ErrorMesssageDto> problemList = new ArrayList<>();
+
+        exception.getBindingResult().getFieldErrors().forEach(e -> {
+            String detail = messageSource.getMessage(e, LocaleContextHolder.getLocale());
+            ErrorMesssageDto messageDetail = new ErrorMesssageDto(
+                    e.getField(),
+                    detail
+            );
+            problemList.add(messageDetail);
+        });
+
+        Problem problem = new Problem(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid Parameters",
+                "Invalid Request Body",
+                problemList
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 }

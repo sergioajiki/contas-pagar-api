@@ -2,6 +2,7 @@ package projetos.contas_pagar_api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,14 +39,14 @@ public class FornecedorController {
 
     @PostMapping
     @Operation(description = "Cadastrar um fornecedor")
-    public ResponseEntity<FornecedorRegistroDto> registerFornecedor(@RequestBody FornecedorRegistroDto fornecedorRegistroDto) {
+    public ResponseEntity<FornecedorRegistroDto> registerFornecedor(@RequestBody @Valid FornecedorRegistroDto fornecedorRegistroDto) {
         FornecedorRegistroDto fornecedorRegistrado = fornecedorService.create(fornecedorRegistroDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorRegistrado);
     }
 
     @PutMapping("/{id}")
     @Operation(description = "Atualiza as informações do fornecedor selecionado por id")
-    public ResponseEntity<FornecedorRegistroDto> updateFornecedor(@RequestParam Long id, @RequestBody FornecedorRegistroDto fornecedorUpdateDto) {
+    public ResponseEntity<FornecedorRegistroDto> updateFornecedor(@RequestParam Long id, @Valid @RequestBody FornecedorRegistroDto fornecedorUpdateDto) {
         FornecedorRegistroDto fornecedorAtualizado = fornecedorService.update(id, fornecedorUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body(fornecedorAtualizado);
     }

@@ -2,6 +2,7 @@ package projetos.contas_pagar_api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,14 +40,14 @@ public class UsuarioController {
 
     @PostMapping
     @Operation(description = "Cadastra um usuário")
-    public ResponseEntity<UsuarioRegistroDto> create(@RequestBody UsuarioRegistroDto usuarioRegistroDto) {
+    public ResponseEntity<UsuarioRegistroDto> create(@RequestBody @Valid UsuarioRegistroDto usuarioRegistroDto) {
         UsuarioRegistroDto usuarioRegistrado = usuarioService.create(usuarioRegistroDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRegistrado);
     }
 
     @PutMapping("/{id}")
     @Operation(description = "Atualiza as informaçãoes de um usuário selecionado por Id")
-    public ResponseEntity<UsuarioRegistroDto> update(@RequestParam Long id, @RequestBody UsuarioRegistroDto usuarioRegistroDto) {
+    public ResponseEntity<UsuarioRegistroDto> update(@RequestParam Long id, @RequestBody @Valid UsuarioRegistroDto usuarioRegistroDto) {
         UsuarioRegistroDto usuarioUpdated = usuarioService.update(id, usuarioRegistroDto);
         return ResponseEntity.status(HttpStatus.OK).body(usuarioUpdated);
     }
