@@ -1,5 +1,6 @@
 package projetos.contas_pagar_api.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.cglib.core.Local;
 import projetos.contas_pagar_api.model.entity.Fornecedor;
 import projetos.contas_pagar_api.model.entity.Lancamento;
@@ -11,7 +12,9 @@ public record LancamentoDto(
         Long idUsuario,
         Long idFornecedor,
         String descricao,
+        @NotBlank(message = "Field valor can not be null or empty")
         Double valor,
+        @NotBlank(message = "Field dataVencimento can not be null or empty")
         LocalDate dataVencimento,
         LocalDate dataPagamento
 ) {

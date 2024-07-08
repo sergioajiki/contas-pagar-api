@@ -1,5 +1,6 @@
 package projetos.contas_pagar_api.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import projetos.contas_pagar_api.model.entity.Lancamento;
 import projetos.contas_pagar_api.model.entity.Usuario;
 
@@ -7,10 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record UsuarioDto(
-    String nome,
-    String email,
-    String password,
-    List<LancamentoDto> lancamentoList
+        @NotBlank(message = "Field nome can not be null or empty")
+        String nome,
+        @NotBlank(message = "Field email can not be null or empty")
+        String email,
+        @NotBlank(message = "Field password can not be null or empty")
+        String password,
+        List<LancamentoDto> lancamentoList
 ) {
     public static UsuarioDto toDto(Usuario usuario) {
         List<Lancamento> lancamentoList = usuario.getLancamentoList();

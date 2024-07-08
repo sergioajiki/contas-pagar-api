@@ -1,5 +1,6 @@
 package projetos.contas_pagar_api.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import projetos.contas_pagar_api.model.entity.Fornecedor;
 import projetos.contas_pagar_api.model.entity.Lancamento;
 
@@ -8,7 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record FornecedorDto (
+        @NotBlank(message = "Field nome can not be null or empty")
         String nome,
+        @NotBlank(message = "Field email can not be null or empty")
         String email,
         String cpf,
         String cnpj,
