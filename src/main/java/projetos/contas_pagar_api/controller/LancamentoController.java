@@ -32,7 +32,7 @@ public class LancamentoController {
 
     @GetMapping("/{id}")
     @Operation(description = "Busca um lançamento por id")
-    public ResponseEntity<LancamentoDto> getLancamentoById(@RequestParam Long id) {
+    public ResponseEntity<LancamentoDto> getLancamentoById(@PathVariable Long id) {
         LancamentoDto lancamentoById = lancamentoService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(lancamentoById);
     }
@@ -46,14 +46,14 @@ public class LancamentoController {
 
     @PutMapping("/{id}")
     @Operation(description = "Atualiza as informações do lançamento")
-    public ResponseEntity<LancamentoDto> updateLancamento(@RequestParam Long id, @RequestBody @Valid LancamentoDto lancamentoDto) {
+    public ResponseEntity<LancamentoDto> updateLancamento(@PathVariable Long id, @RequestBody @Valid LancamentoDto lancamentoDto) {
         LancamentoDto lancamentoUpdated = lancamentoService.update(id, lancamentoDto);
         return ResponseEntity.status(HttpStatus.OK).body(lancamentoUpdated);
     }
 
     @DeleteMapping("/{id}")
     @Operation(description = "Exclui um lançamento por id")
-    public ResponseEntity<Void> deleteLancamento(@RequestParam Long id) {
+    public ResponseEntity<Void> deleteLancamento(@PathVariable Long id) {
         lancamentoService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

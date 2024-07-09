@@ -1,5 +1,8 @@
 package projetos.contas_pagar_api.service;
 
+
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projetos.contas_pagar_api.advice.exception.DuplicateEntryException;
@@ -132,4 +135,5 @@ public class FornecedorService implements IFornecedorService {
             fornecedor.setCpf(null);
         }
     }
+
 }

@@ -32,7 +32,7 @@ public class FornecedorController {
 
     @GetMapping("/{id}")
     @Operation(description = "Busca um fornecedor por id")
-    public ResponseEntity<FornecedorDto> getFornecedorById(@RequestParam Long id) {
+    public ResponseEntity<FornecedorDto> getFornecedorById(@PathVariable Long id) {
         FornecedorDto fornecedorById = fornecedorService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(fornecedorById);
     }
@@ -46,14 +46,14 @@ public class FornecedorController {
 
     @PutMapping("/{id}")
     @Operation(description = "Atualiza as informações do fornecedor selecionado por id")
-    public ResponseEntity<FornecedorRegistroDto> updateFornecedor(@RequestParam Long id, @Valid @RequestBody FornecedorRegistroDto fornecedorUpdateDto) {
+    public ResponseEntity<FornecedorRegistroDto> updateFornecedor(@PathVariable Long id, @Valid @RequestBody FornecedorRegistroDto fornecedorUpdateDto) {
         FornecedorRegistroDto fornecedorAtualizado = fornecedorService.update(id, fornecedorUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body(fornecedorAtualizado);
     }
 
     @DeleteMapping("/{id}")
     @Operation(description = "Exclui um fornecedor por id")
-    public ResponseEntity<Void> deleteFornecedor(@RequestParam Long id) {
+    public ResponseEntity<Void> deleteFornecedor(@PathVariable Long id) {
         fornecedorService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

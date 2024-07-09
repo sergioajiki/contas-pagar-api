@@ -1,5 +1,7 @@
 package projetos.contas_pagar_api.advice;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -15,7 +17,9 @@ import projetos.contas_pagar_api.advice.exception.NotFoundException;
 import projetos.contas_pagar_api.dto.ErrorMesssageDto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GeneralControllerAdvice {
@@ -90,5 +94,16 @@ public class GeneralControllerAdvice {
                 null
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Problem> handleConstraintViolationException(ConstraintViolationException exception) {
+        Problem problem = new Problem(
+                HttpStatus.FORBIDDEN.value(),
+                "Constrain violation",
+                exception.getConstraintViolations().stream().toList().toString(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problem);
     }
 }

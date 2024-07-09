@@ -3,6 +3,8 @@ package projetos.contas_pagar_api.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
@@ -16,8 +18,10 @@ public class Fornecedor {
     private Long id;
     private String nome;
     private String email;
+    @CPF(message = "Cpf inválido")
     @Column(name = "cpf", nullable = true, unique = true)
     private String cpf;
+    @CNPJ(message = "Cnpj inválido")
     @Column(name = "cnpj", nullable = true, unique = true)
     private String cnpj;
     @OneToMany(mappedBy = "fornecedor", cascade = CascadeType.ALL, orphanRemoval = true)

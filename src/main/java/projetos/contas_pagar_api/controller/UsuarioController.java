@@ -33,7 +33,7 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     @Operation(description = "Busca um fornecedor por id")
-    public ResponseEntity<UsuarioDto> getUsuarioById(@RequestParam Long id) {
+    public ResponseEntity<UsuarioDto> getUsuarioById(@PathVariable Long id) {
         UsuarioDto usuarioById = usuarioService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(usuarioById);
     }
@@ -47,14 +47,14 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     @Operation(description = "Atualiza as informaçãoes de um usuário selecionado por Id")
-    public ResponseEntity<UsuarioRegistroDto> update(@RequestParam Long id, @RequestBody @Valid UsuarioRegistroDto usuarioRegistroDto) {
+    public ResponseEntity<UsuarioRegistroDto> update(@PathVariable Long id, @RequestBody @Valid UsuarioRegistroDto usuarioRegistroDto) {
         UsuarioRegistroDto usuarioUpdated = usuarioService.update(id, usuarioRegistroDto);
         return ResponseEntity.status(HttpStatus.OK).body(usuarioUpdated);
     }
 
     @DeleteMapping("/{id}")
     @Operation(description = "Exclui um usuário")
-    public ResponseEntity<Void> delete(@RequestParam Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         usuarioService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
