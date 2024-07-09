@@ -7,9 +7,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import projetos.contas_pagar_api.advice.exception.DuplicateEntryException;
 import projetos.contas_pagar_api.advice.exception.InvalidDataException;
 import projetos.contas_pagar_api.advice.exception.InvalidEmailFormatException;
@@ -105,5 +107,27 @@ public class GeneralControllerAdvice {
                 null
         );
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problem);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleInvalidType(MethodArgumentTypeMismatchException exception) {
+        Problem problem = new Problem(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid Type Format",
+                exception.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleHttpMessageNotReadable(HttpMessageNotReadableException exception) {
+        Problem problem = new Problem(
+                HttpStatus.BAD_REQUEST.value(),
+                "Unrecognized token",
+                exception.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 }
