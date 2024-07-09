@@ -16,9 +16,9 @@ public class Fornecedor {
     private Long id;
     private String nome;
     private String email;
-    @Column(name = "cpf", unique = true)
+    @Column(name = "cpf", nullable = true, unique = true)
     private String cpf;
-    @Column(name = "cnpj", unique = true)
+    @Column(name = "cnpj", nullable = true, unique = true)
     private String cnpj;
     @OneToMany(mappedBy = "fornecedor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lancamento> lancamentoList;

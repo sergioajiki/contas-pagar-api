@@ -3,6 +3,7 @@ package projetos.contas_pagar_api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projetos.contas_pagar_api.advice.exception.DuplicateEntryException;
+import projetos.contas_pagar_api.advice.exception.InvalidDataException;
 import projetos.contas_pagar_api.advice.exception.InvalidEmailFormatException;
 import projetos.contas_pagar_api.advice.exception.NotFoundException;
 import projetos.contas_pagar_api.dto.FornecedorDto;
@@ -50,19 +51,27 @@ public class FornecedorService implements IFornecedorService {
     public FornecedorRegistroDto create(FornecedorRegistroDto fornecedorToCreateDto) {
         Fornecedor fornecedorToSave = FornecedorDto.toModel(fornecedorToCreateDto);
 
+        validateCpfCnpjRegister(fornecedorToSave);
+
         boolean isEmail = EmailValidator.isValidEmail(fornecedorToSave.getEmail());
         if (!isEmail) {
             throw new InvalidEmailFormatException("Invalid email format");
         }
 
-        Optional<Fornecedor> verificaCpfOptional = Optional.ofNullable(fornecedorRepository.findByCpf(fornecedorToSave.getCpf()));
-        if (verificaCpfOptional.isPresent()) {
-            throw new DuplicateEntryException("Cpf já está cadastrado");
+        if (fornecedorToSave.getCpf() != null && !fornecedorToSave.getCpf().isEmpty()) {
+            Optional<Fornecedor> verificaCpfOptional = Optional.ofNullable(fornecedorRepository.findByCpf(fornecedorToSave.getCpf()));
+            if (verificaCpfOptional.isPresent()) {
+                throw new DuplicateEntryException("Cpf já está cadastrado");
+            }
         }
-        Optional<Fornecedor> verificaCnpjOptional = Optional.ofNullable(fornecedorRepository.findByCnpj(fornecedorToSave.getCnpj()));
-        if (verificaCnpjOptional.isPresent()) {
-            throw new DuplicateEntryException("Cnpj já está cadastrado");
+
+        if (fornecedorToSave.getCnpj() != null && !fornecedorToSave.getCnpj().isEmpty()) {
+            Optional<Fornecedor> verificaCnpjOptional = Optional.ofNullable(fornecedorRepository.findByCnpj(fornecedorToSave.getCnpj()));
+            if (verificaCnpjOptional.isPresent()) {
+                throw new DuplicateEntryException("Cnpj já está cadastrado");
+            }
         }
+
         Optional<Fornecedor> verificaEmailOptional = Optional.ofNullable(fornecedorRepository.findByEmail(fornecedorToSave.getEmail()));
         if (verificaEmailOptional.isPresent()) {
             throw new DuplicateEntryException("Email já está cadastrado");
@@ -86,6 +95,8 @@ public class FornecedorService implements IFornecedorService {
         }
 
         Fornecedor fornecedorToUpdate = fornecedorOptional.get();
+
+        validateCpfCnpjRegister(fornecedorToUpdate);
         fornecedorToUpdate.setNome(fornecedorToUpdateDto.nome());
         fornecedorToUpdate.setEmail(fornecedorToUpdateDto.email());
         fornecedorToUpdate.setCpf(fornecedorToUpdateDto.cpf());
@@ -96,12 +107,29 @@ public class FornecedorService implements IFornecedorService {
         return fornecedorUpdated;
     }
 
-
     public void delete(Long id) {
         Optional<Fornecedor> fornecedorOptional = fornecedorRepository.findById(id);
         if (fornecedorOptional.isEmpty()) {
             throw new NotFoundException(String.format("Fornecedor com id %d não encontrado", id));
         }
         fornecedorRepository.delete(fornecedorOptional.get());
+    }
+
+    private void validateCpfCnpjRegister(Fornecedor fornecedor) {
+
+        boolean isCpfEmpty = fornecedor.getCpf() == null || fornecedor.getCpf().isEmpty();
+        boolean isCnpjEmpty = fornecedor.getCnpj() == null || fornecedor.getCnpj().isEmpty();
+        if (isCpfEmpty && isCnpjEmpty) {
+            throw new InvalidDataException("Nenhum valor foi informado: Cpf ou Cnpj deve ser preenchido");
+        }
+        if (!isCpfEmpty && !isCnpjEmpty) {
+            throw new InvalidDataException("Não deve existir ambos valores: Cpf e Cnpj");
+        }
+        if (!isCpfEmpty) {
+            fornecedor.setCnpj(null);
+        }
+        if (!isCnpjEmpty) {
+            fornecedor.setCpf(null);
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import projetos.contas_pagar_api.advice.exception.DuplicateEntryException;
+import projetos.contas_pagar_api.advice.exception.InvalidDataException;
 import projetos.contas_pagar_api.advice.exception.InvalidEmailFormatException;
 import projetos.contas_pagar_api.advice.exception.NotFoundException;
 import projetos.contas_pagar_api.dto.ErrorMesssageDto;
@@ -29,7 +30,7 @@ public class GeneralControllerAdvice {
     public ResponseEntity<Problem> handleNotFoundException(NotFoundException exception) {
         Problem problem = new Problem(
                 HttpStatus.BAD_REQUEST.value(),
-                "Informação não Encontrada",
+                "Informação não encontrada",
                 exception.getMessage(),
                 null
         );
@@ -74,6 +75,17 @@ public class GeneralControllerAdvice {
         Problem problem = new Problem(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid Email Format",
+                exception.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleInvalidData(InvalidDataException exception) {
+        Problem problem = new Problem(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid or missing data",
                 exception.getMessage(),
                 null
         );
