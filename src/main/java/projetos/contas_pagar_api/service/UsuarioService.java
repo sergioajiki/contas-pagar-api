@@ -3,11 +3,13 @@ package projetos.contas_pagar_api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projetos.contas_pagar_api.advice.exception.DuplicateEntryException;
+import projetos.contas_pagar_api.advice.exception.InvalidEmailFormatException;
 import projetos.contas_pagar_api.advice.exception.NotFoundException;
 import projetos.contas_pagar_api.dto.UsuarioDto;
 import projetos.contas_pagar_api.dto.UsuarioRegistroDto;
 import projetos.contas_pagar_api.model.entity.Usuario;
 import projetos.contas_pagar_api.model.repository.UsuarioRepository;
+import projetos.contas_pagar_api.util.EmailValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,8 +43,14 @@ public class UsuarioService implements IUsuarioService {
 
     public UsuarioRegistroDto create(UsuarioRegistroDto usuarioToCreate) {
         Usuario usuarioToSave = UsuarioDto.toModel(usuarioToCreate);
-        var verificaEmailOptional = Optional.ofNullable(usuarioRepository.findByEmail(usuarioToCreate.email())) ;
-        if(verificaEmailOptional.isPresent()) {
+
+        boolean isEmail = EmailValidator.isValidEmail(usuarioToSave.getEmail());
+        if (!isEmail) {
+            throw new InvalidEmailFormatException("Invalid email format");
+        }
+
+        var verificaEmailOptional = Optional.ofNullable(usuarioRepository.findByEmail(usuarioToCreate.email()));
+        if (verificaEmailOptional.isPresent()) {
             throw new DuplicateEntryException("Email já está cadastrado");
         }
         usuarioRepository.save(usuarioToSave);
@@ -51,10 +59,17 @@ public class UsuarioService implements IUsuarioService {
     }
 
     public UsuarioRegistroDto update(Long id, UsuarioRegistroDto usuarioToUpdateDto) {
+        boolean isEmail = EmailValidator.isValidEmail(usuarioToUpdateDto.email());
+        if (!isEmail) {
+            throw new InvalidEmailFormatException("Invalid email format");
+        }
+
         var usuarioOptional = usuarioRepository.findById(id);
-        if(usuarioOptional.isEmpty()) {
+
+        if (usuarioOptional.isEmpty()) {
             throw new NotFoundException(String.format("Usuario com id %d não encontrado", id));
         }
+
         Usuario usuarioToUpdate = usuarioOptional.get();
         usuarioToUpdate.setNome(usuarioToUpdateDto.nome());
         usuarioToUpdate.setEmail(usuarioToUpdateDto.email());
@@ -65,7 +80,7 @@ public class UsuarioService implements IUsuarioService {
 
     public void delete(Long id) {
         var usuarioOptional = usuarioRepository.findById(id);
-        if(usuarioOptional.isEmpty()) {
+        if (usuarioOptional.isEmpty()) {
             throw new NotFoundException(String.format("Usuário com id %d não encontrado", id));
         }
         usuarioRepository.delete(usuarioOptional.get());

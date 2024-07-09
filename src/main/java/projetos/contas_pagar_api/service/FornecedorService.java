@@ -3,12 +3,14 @@ package projetos.contas_pagar_api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projetos.contas_pagar_api.advice.exception.DuplicateEntryException;
+import projetos.contas_pagar_api.advice.exception.InvalidEmailFormatException;
 import projetos.contas_pagar_api.advice.exception.NotFoundException;
 import projetos.contas_pagar_api.dto.FornecedorDto;
 import projetos.contas_pagar_api.dto.FornecedorInfoDto;
 import projetos.contas_pagar_api.dto.FornecedorRegistroDto;
 import projetos.contas_pagar_api.model.entity.Fornecedor;
 import projetos.contas_pagar_api.model.repository.FornecedorRepository;
+import projetos.contas_pagar_api.util.EmailValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +49,12 @@ public class FornecedorService implements IFornecedorService {
 
     public FornecedorRegistroDto create(FornecedorRegistroDto fornecedorToCreateDto) {
         Fornecedor fornecedorToSave = FornecedorDto.toModel(fornecedorToCreateDto);
+
+        boolean isEmail = EmailValidator.isValidEmail(fornecedorToSave.getEmail());
+        if (!isEmail) {
+            throw new InvalidEmailFormatException("Invalid email format");
+        }
+
         Optional<Fornecedor> verificaCpfOptional = Optional.ofNullable(fornecedorRepository.findByCpf(fornecedorToSave.getCpf()));
         if (verificaCpfOptional.isPresent()) {
             throw new DuplicateEntryException("Cpf já está cadastrado");
@@ -66,7 +74,13 @@ public class FornecedorService implements IFornecedorService {
     }
 
     public FornecedorRegistroDto update(Long id, FornecedorRegistroDto fornecedorToUpdateDto) {
+        boolean isEmail = EmailValidator.isValidEmail(fornecedorToUpdateDto.email());
+        if (!isEmail) {
+            throw new InvalidEmailFormatException("Invalid email format");
+        }
+
         Optional<Fornecedor> fornecedorOptional = fornecedorRepository.findById(id);
+
         if (fornecedorOptional.isEmpty()) {
             throw new NotFoundException(String.format("Fornecedor com id %d não encontrado", id));
         }
